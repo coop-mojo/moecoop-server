@@ -2,19 +2,13 @@
 
 [![GitHub version](https://badge.fury.io/gh/coop-mojo%2Fmoecoop.svg)](https://badge.fury.io/gh/coop-mojo%2Fmoecoop)
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/coop-mojo/moecoop-server/blob/master/LICENSE)
-[![Documentation Status](https://readthedocs.org/projects/moecoop/badge/?version=latest)](http://docs.fukuro.coop.moe/ja/latest/?badge=latest)
-[![Build Status](https://travis-ci.org/coop-mojo/moecoop.svg?branch=master)](https://travis-ci.org/coop-mojo/moecoop)
-[![Build status](https://ci.appveyor.com/api/projects/status/9lju6b2f0y411x2a/branch/master?svg=true)](https://ci.appveyor.com/project/coop-mojo/moecoop/branch/master)
-[![Coverage Status](https://coveralls.io/repos/github/coop-mojo/moecoop/badge.svg?branch=master)](https://coveralls.io/github/coop-mojo/moecoop?branch=master)
-
+[![Build Status](https://travis-ci.org/coop-mojo/moecoop-server.svg?branch=master)](https://travis-ci.org/coop-mojo/moecoop-server)
+[![Build status](https://ci.appveyor.com/api/projects/status/owubtsy92mcfxewc/branch/master?svg=true)](https://ci.appveyor.com/project/coop-mojo/moecoop-server/branch/master)
+[![Coverage Status](https://coveralls.io/repos/github/coop-mojo/moecoop-server/badge.svg?branch=master)](https://coveralls.io/github/coop-mojo/moecoop-server?branch=master)
 
 生協の知恵袋は，[Master of Epic](http://moepic.com/top.php?mid=_) のバインダーやアイテム・レシピ情報を見るためのツールです．
 
 生協の知恵袋 API サーバーは、知恵袋のデータや機能を提供するサーバーです。
-
-リリース版は[リンク先](https://github.com/coop-mojo/moecoop/releases/latest)から`moecoop-*.zip`をダウンロードしてご利用ください．
-
-また，開発中の生焼け版の公開を始めました([64bit版](https://ci.appveyor.com/api/projects/coop-mojo/moecoop/artifacts/moecoop-trunk-64bit.zip?branch=master&job=Environment%3A%20DC%3Ddmd%2C%20DVersion%3D2.071.2%3B%20Platform%3A%20x64)、[32bit版](https://ci.appveyor.com/api/projects/coop-mojo/moecoop/artifacts/moecoop-trunk-32bit.zip?branch=master&job=Environment%3A%20DC%3Ddmd%2C%20DVersion%3D2.071.2%3B%20Platform%3A%20x86))．登録されているアイテム情報や新機能が増えているかもしれないですが，生焼けなので試すとお腹を壊したり爆発したり，鼻から LoC が出てくるかもしれません．
 
 ## 使い方
 [マニュアル](http://docs.fukuro.coop.moe)をご覧ください。
