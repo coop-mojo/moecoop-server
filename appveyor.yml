@@ -62,7 +62,7 @@ install:
               mv ldc2-$($version)-win$($env:Dmodel)-msvc ldc2;
               popd;
             }
-            Invoke-WebRequest "https://code.dlang.org/files/dub-1.1.1-windows-x86.zip" -OutFile "c:\dub.zip";
+            Invoke-WebRequest "https://code.dlang.org/files/dub-1.2.2-windows-x86.zip" -OutFile "c:\dub.zip";
             pushd c:\\;
             7z x dub.zip -odub > $null;
             popd;
