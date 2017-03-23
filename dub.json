@@ -21,6 +21,5 @@
     "subPackages": [
         "./common"
     ],
-    "mainSourceFile": "source/server.d",
     "versions": ["Server", "VibeNoSSL"]
 }
