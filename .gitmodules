@@ -1,0 +1,6 @@
+[submodule "data"]
+	path = data
+	url = https://github.com/coop-mojo/moecoop-data.git
+[submodule "common"]
+	path = common
+	url = https://github.com/coop-mojo/moecoop-common.git
