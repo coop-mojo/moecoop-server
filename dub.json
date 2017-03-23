@@ -19,7 +19,7 @@
         "moecoop-server:common": "*"
     },
     "subPackages": [
-        "./common"
+        "./common/"
     ],
     "mainSourceFile": "source/server.d",
     "versions": ["Server", "VibeNoSSL"]
