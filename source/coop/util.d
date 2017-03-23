@@ -1,7 +1,7 @@
 /**
  * Copyright: Copyright 2016 Mojo
  * Authors: Mojo
- * License: $(LINK2 https://github.com/coop-mojo/moecoop/blob/master/LICENSE, MIT License)
+ * License: $(LINK2 https://github.com/coop-mojo/moecoop-server/blob/master/LICENSE, MIT License)
  */
 module coop.util;
 
