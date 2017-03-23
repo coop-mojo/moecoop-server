@@ -1,4 +1,4 @@
-# 生協の知恵袋
+# 生協の知恵袋 API サーバー
 
 [![GitHub version](https://badge.fury.io/gh/coop-mojo%2Fmoecoop.svg)](https://badge.fury.io/gh/coop-mojo%2Fmoecoop)
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/coop-mojo/moecoop/blob/master/LICENSE)
@@ -9,6 +9,8 @@
 
 
 生協の知恵袋は，[Master of Epic](http://moepic.com/top.php?mid=_) のバインダーやアイテム・レシピ情報を見るためのツールです．
+
+生協の知恵袋 API サーバーは、知恵袋のデータや機能を提供するサーバーです。
 
 リリース版は[リンク先](https://github.com/coop-mojo/moecoop/releases/latest)から`moecoop-*.zip`をダウンロードしてご利用ください．
 
