@@ -1,7 +1,6 @@
 {
     "name": "moecoop-server",
     "targetName": "fukurod",
-    "targetType": "executable",
     "description": "生協の知恵袋 API サーバー",
     "homepage": "https://github.com/coop-mojo/moecoop-server/",
     "copyright": "© 2016, もじょんぬ",
