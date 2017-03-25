@@ -1,6 +1,6 @@
 .dub/
 dub.selections.json
-moecoop-server-test-application
+moecoop-server-test-library
 moecoop.tgz
 .fldd.cache
 *.lst
