@@ -20,5 +20,5 @@
     "subPackages": [
         "./common"
     ],
-    "versions": ["Server", "VibeNoSSL"]
+    "versions": ["VibeNoSSL"]
 }
