@@ -229,15 +229,7 @@ class WebModel: ModelAPI
         import std.range;
         import std.container.rbtree;
 
-        auto ret = wm.getMenuRecipeResult(作成アイテム, 所持アイテム, 使用レシピ, new RedBlackTree!string(直接調達アイテム));
-        return typeof(return)(
-            ret.recipes.byKeyValue.map!(kv => initRecipeNumberLink(kv.key, kv.value)).array,
-            ret.materials.byKeyValue.map!((kv) {
-                    auto it = initItemNumberLink(kv.key, kv.value.num);
-                    it.追加情報["中間素材"] = kv.value.isIntermediate.serialize!JsonSerializer;
-                    return it;
-                }).array,
-            ret.leftovers.byKeyValue.map!(kv => initItemNumberLink(kv.key, kv.value)).array);
+        return wm.getMenuRecipeResult(作成アイテム, 所持アイテム, 使用レシピ, new RedBlackTree!string(直接調達アイテム));
     }
 private:
     auto getDetails(Json[string] info, string[] fields)
@@ -291,8 +283,6 @@ private:
     WisdomModel wm;
     string message;
 }
-
-private:
 
 auto toAssocArray(T)(T info) if (is(T == struct))
 {

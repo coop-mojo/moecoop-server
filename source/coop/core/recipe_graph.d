@@ -74,7 +74,7 @@ class RecipeGraph
     /++
      + targets を作るのに必要なレシピ，素材，作成時の余り素材を返す
      +/
-    auto elements(int[string] targets, int[string] owned, RedBlackTree!string mats = new RedBlackTree!string) pure
+    auto elements(int[string] targets, int[string] owned, RedBlackTree!string mats = new RedBlackTree!string)
     in {
         import std.range;
 
@@ -82,6 +82,8 @@ class RecipeGraph
     } body {
         import std.algorithm;
         import std.array;
+        import coop.common;
+        import coop.server.model.internal;
 
         // target に指定されているものは、mats に入っている場合でも作成を省略しない
         mats.removeKey(targets.keys);
@@ -125,16 +127,40 @@ class RecipeGraph
             }
         }
 
-        rs = rs.byKeyValue
-               .filter!(kv => kv.value > 0)
-               .map!(kv => tuple(kv.key, kv.value))
-               .assocArray;
-        leftover = leftover.byKeyValue
-                           .filter!(kv => kv.value > 0)
-                           .map!(kv => tuple(kv.key, kv.value))
-                           .assocArray;
-        alias Ret = Tuple!(int[string], "recipes", MatTuple[string], "materials", int[string], "leftovers");
-        return Ret(rs, ms, leftover);
+        import std.stdio;
+        auto retRecipes = elements.recipes
+                                  .filter!(r => rs.get(r.name, 0) > 0)
+                                  .map!((r) {
+                                          import std.exception;
+                                          import vibe.http.common;
+                                          import vibe.data.json;
+
+                                          import coop.common: RecipeInfo;
+
+                                          auto ret = initRecipeNumberLink(r.name, rs[r.name]);
+                                          auto detail = recipeFor(r.name);
+                                          ret.追加情報["必要スキル"] = detail.requiredSkills.serialize!JsonSerializer;
+                                          ret.追加情報["レシピ必須"] = detail.requiresRecipe.serialize!JsonSerializer;
+                                          ret.追加情報["選択レシピグループ"] = r.parentGroup.serialize!JsonSerializer;
+                                          return ret;
+                                      })
+                                  .array;
+        auto retMaterials = elements.materials
+                            .map!"a.name"
+                            .filter!(m => m in ms)
+                            .map!((m) {
+                                    import vibe.data.json;
+                                    auto it = initItemNumberLink(m, ms[m].num);
+                                    it.追加情報["中間素材"] = ms[m].isIntermediate.serialize!JsonSerializer;
+                                    return it;
+                                })
+                            .array;
+        auto retLeftover = elements.materials
+                           .map!"a.name"
+                           .filter!(m => leftover.get(m, 0) > 0)
+                           .map!(m => initItemNumberLink(m, leftover[m]))
+                           .array;
+        return PostMenuRecipeResult(retRecipes, retMaterials, retLeftover);
     }
 
     @property auto targets() const @safe pure nothrow
@@ -664,6 +690,8 @@ unittest
 // コンバインで複数種類の生産品が生成される場合
 unittest
 {
+    import std.algorithm;
+    import std.range;
     import std.container;
 
     import coop.core.recipe;
@@ -682,16 +710,22 @@ unittest
                                  pref);
 
     auto tpl = graph.elements(["精米": 1], (int[string]).init);
-    assert(tpl.recipes == ["精米/米ぬか": 1]);
-    assert(tpl.materials == [
-               "精米": MatTuple(1, true),
-               "玄米": MatTuple(1, false),
-               ]);
-    assert(tpl.leftovers == ["精米": 1, "米ぬか": 1]);
+    assert(tpl.必要レシピ.length == 1);
+    auto r1 = tpl.必要レシピ[0];
+    assert(r1.レシピ名 == "精米/米ぬか");
+    assert(r1.コンバイン数 == 1);
+    assert(r1.追加情報["選択レシピグループ"].get!string.empty);
+
+    assert(tpl.必要素材.map!"a.アイテム名".equal(["精米", "玄米"]));
+    assert(tpl.必要素材.map!"a.個数".equal([1, 1]));
+    assert(tpl.必要素材.map!(a => a.追加情報["中間素材"].get!bool).equal([true, false]));
+    assert(tpl.余り物.map!"a.アイテム名".equal(["精米", "米ぬか"]));
+    assert(tpl.余り物.map!"a.個数".equal([1, 1]));
 }
 
 unittest
 {
+    import std.algorithm;
     import std.container;
 
     import coop.core.recipe;
@@ -748,27 +782,22 @@ unittest
                                      "塩": make!(RedBlackTree!string)("塩(岩塩)"),
                                  ]);
     auto tpl = graph.elements(["チーズ パイ": 1], ["塩": 1]);
-    assert(tpl.recipes == [
-               "チーズ パイ": 1,
-               "パイ生地(ミニ ウォーター ボトル)": 1,
-               "バター": 1,
-               "小麦粉": 1,
-               "チーズ": 1,
-               "塩(岩塩)": 1,
-               ]);
-    assert(tpl.materials == [
-               "小麦粉": MatTuple(1, true),
-               "ミルク": MatTuple(2, false),
-               "チーズ": MatTuple(1, true),
-               "パイ生地": MatTuple(1, true),
-               "小麦": MatTuple(1, false),
-               "岩塩": MatTuple(1, false),
-               "バター": MatTuple(1, true),
-               "ミニ ウォーター ボトル": MatTuple(1, false),
-               "臼": MatTuple(1, false),
-               "酢": MatTuple(1, false),
-               "チーズ パイ": MatTuple(1, true),
-               "塩": MatTuple(2, true),
-               ]);
-    assert(tpl.leftovers == ["小麦粉": 4, "チーズ パイ": 1, "塩": 6]);
+
+    assert(tpl.必要レシピ.map!"a.レシピ名".equal(
+               ["チーズ パイ", "パイ生地(ミニ ウォーター ボトル)", "バター", "小麦粉", "チーズ", "塩(岩塩)"]));
+    assert(tpl.必要レシピ.map!"a.コンバイン数".equal([1, 1, 1, 1, 1, 1]));
+
+    auto mats = tpl.必要素材;
+    assert(tpl.必要素材.map!"a.アイテム名".equal(
+               ["チーズ パイ", "パイ生地", "ミニ ウォーター ボトル", "バター", "小麦粉", "小麦", "臼", "チーズ",
+                "塩", "岩塩", "ミルク", "酢"]));
+    assert(tpl.必要素材.map!"a.個数".equal(
+               [1, 1, 1, 1, 1, 1, 1, 1,
+                2, 1, 2, 1]));
+    assert(tpl.必要素材.map!(a => a.追加情報["中間素材"].get!bool).equal(
+               [true, true, false, true, true, false, false, true,
+                true, false, false, false]));
+
+    assert(tpl.余り物.map!"a.アイテム名".equal(["チーズ パイ", "小麦粉", "塩"]));
+    assert(tpl.余り物.map!"a.個数".equal([1, 4, 6]));
 }
