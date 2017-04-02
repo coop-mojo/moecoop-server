@@ -1,23 +1,13 @@
 FROM frolvlad/alpine-glibc:latest
 LABEL maintainer="Mojo"
 
-RUN apk add --no-cache --virtual devtools perl curl git gcc make libc-dev && \
-    touch /usr/local/bin/nkf && \
-    chmod +x /usr/local/bin/nkf && \
-    curl -o cmigemo.zip http://files.kaoriya.net/cmigemo/cmigemo-default-win64-20110227.zip && \
-    unzip cmigemo.zip && \
-    install -d /usr/share/migemo/utf-8 && \
-    install -c -D -m 644 cmigemo-default-win64/dict/utf-8/* /usr/share/migemo/utf-8 && \
-    rm -rf cmigemo.zip cmigemo-default-win64 && \
-    git clone https://github.com/koron/cmigemo.git && \
-    cd cmigemo && \
-    ./configure --prefix=/usr && \
-    make gcc && \
-    make -f compile/Make_gcc.mak install-lib && \
-    cd / && \
-    rm -rf cmigemo /usr/local/bin/nkf && \
-    apk del devtools && \
-    apk add --no-cache libevent
+RUN apk add --no-cache curl && \
+    curl -o /etc/apk/keys/ttanjo@gmail.com-58e06647.rsa.pub \
+         https://raw.githubusercontent.com/tom-tan/alpine-pkg-cmigemo/master/ttanjo%40gmail.com-58e06647.rsa.pub && \
+    curl -L -o cmigemo.apk https://github.com/tom-tan/alpine-pkg-cmigemo/releases/download/1.2.r38/cmigemo-1.2.r38-r0.apk && \
+    apk add --no-cache cmigemo.apk libevent && \
+    rm cmigemo.apk && \
+    apk del curl
 
 ADD moecoop.tgz /moecoop
 
