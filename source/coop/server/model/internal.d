@@ -31,7 +31,9 @@ class WebModel: ModelAPI
 
     override @property GetInformationResult getInformation() const pure nothrow
     {
-        return GetInformationResult(message, "v1.2.1", "v1.2.1");
+        auto latest = "v1.2.1";
+        auto supported = "v1.2.1";
+        return GetInformationResult(message, supported, latest);
     }
 
     override @property GetBinderCategoriesResult getBinderCategories() const pure nothrow
