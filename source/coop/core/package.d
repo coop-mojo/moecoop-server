@@ -228,7 +228,7 @@ private:
         import std.string;
 
         auto input = query.removechars(r"/[ 　]/");
-        auto queryFun = matchFunFor(query, useMigemo, useReverseSearch);
+        auto queryFun = matchFunFor(input, useMigemo, useReverseSearch);
 
         return allRecipes.filter!queryFun.array;
     }
