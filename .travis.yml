@@ -45,8 +45,8 @@ script:
         ./archive.sh || exit 1;
         export version=$(cat views/version);
         docker build -t $MOECOOP_IMAGE:$version .;
-        docker run $MOECOOP_IMAGE -h || exit 1;
-        docker images $MOECOOP_IMAGE;
+        docker run $MOECOOP_IMAGE:$version -h || exit 1;
+        docker images $MOECOOP_IMAGE:$version;
     fi
 
 after_success:
