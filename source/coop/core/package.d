@@ -168,11 +168,13 @@ class WisdomModel
     {
         import std.algorithm;
         import std.array;
+        import std.range;
         import std.string;
 
         auto items = canBeProduced ?
                      wisdom.rrecipeList.keys :
-                     wisdom.itemList.keys;
+                     chain(wisdom.itemList.keys.dup,
+                           wisdom.rrecipeList.keys.dup).sort.uniq.array;
         auto input = query.removechars(r"/[ 　]/");
         auto queryFun = matchFunFor(input, useMigemo);
         return items.filter!queryFun.array;
