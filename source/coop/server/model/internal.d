@@ -138,12 +138,19 @@ class WebModel: ModelAPI
         return typeof(return)(lst.map!toRecipeLink.array);
     }
 
-    override GetItemsResult getItems(string query, bool useMigemo, bool onlyProducts)
+    override GetItemsResult getItems(string query, bool useMigemo, bool onlyProducts, bool fromIngredients)
     {
         import std.algorithm;
         import std.range;
 
-        return typeof(return)(wm.getItemList(query, cast(Flag!"useMigemo")useMigemo, cast(Flag!"canBeProduced")onlyProducts)
+        import vibe.http.common;
+
+        import std.stdio;
+        writefln("only-products: %s, from-ingredients: %s", onlyProducts, fromIngredients);
+        enforceHTTP(!(!onlyProducts && fromIngredients), HTTPStatus.BadRequest, "from-ingredients is valid only if only-products=true");
+
+        return typeof(return)(wm.getItemList(query, cast(Flag!"useMigemo")useMigemo,
+                                             cast(Flag!"canBeProduced")onlyProducts, cast(Flag!"useReverseSearch")fromIngredients)
                                 .map!(i => initItemLink(i)).array);
     }
 

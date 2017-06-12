@@ -164,20 +164,50 @@ class WisdomModel
     }
 
     /// query にヒットするアイテム一覧を返す
-    auto getItemList(string query, Flag!"useMigemo" useMigemo, Flag!"canBeProduced" canBeProduced)
-    {
+    auto getItemList(string query, Flag!"useMigemo" useMigemo, Flag!"canBeProduced" canBeProduced, Flag!"useReverseSearch" fromIngredients)
+    in {
+        assert(!(!canBeProduced && fromIngredients), "fromIngredients is valid only if canBeProduced == true");
+    } body {
         import std.algorithm;
         import std.array;
         import std.range;
         import std.string;
 
-        auto items = canBeProduced ?
-                     wisdom.rrecipeList.keys :
-                     chain(wisdom.itemList.keys.dup,
-                           wisdom.rrecipeList.keys.dup).sort.uniq.array;
         auto input = query.removechars(r"/[ 　]/");
-        auto queryFun = matchFunFor(input, useMigemo);
-        return items.filter!queryFun.array;
+        auto fun = simpleMatchFun(input, useMigemo);
+        if (canBeProduced)
+        {
+            if (fromIngredients)
+            {
+                return wisdom.ing2prodList
+                    .byPair
+                    .filter!(kv => fun(kv[0]))
+                    .map!(kv => kv[1][])
+                    .joiner
+                    .array
+                    .sort()
+                    .uniq
+                    .array;
+            }
+            else
+            {
+                return wisdom.rrecipeList
+                    .keys
+                    .filter!fun
+                    .array;
+            }
+        }
+        else
+        {
+            assert(!fromIngredients);
+            return chain(wisdom.itemList.keys.dup,
+                         wisdom.rrecipeList.keys.dup)
+                .sort
+                .uniq
+                .array
+                .filter!fun
+                .array;
+        }
     }
 
     /// 
@@ -237,17 +267,16 @@ private:
         return allRecipes.filter!queryFun.array;
     }
 
-    auto matchFunFor(string query, Flag!"useMigemo" useMigemo, Flag!"useReverseSearch" useReverseSearch = No.useReverseSearch)
+    auto simpleMatchFun(string query, Flag!"useMigemo" useMigemo)
     {
         import std.regex;
         import std.string;
-        bool delegate(string) fun;
         if (useMigemo)
         {
             assert(migemo);
             try{
                 auto q = migemo.query(query).regex;
-                fun = (string s) => !s.removechars(r"/[ 　]/").matchFirst(q).empty;
+                return (string s) => !s.removechars(r"/[ 　]/").matchFirst(q).empty;
             } catch(RegexException e) {
                 // use default matchFun
             }
@@ -257,8 +286,14 @@ private:
             import std.algorithm;
             import std.range;
 
-            fun = (string s) => !find(s.removechars(r"/[ 　]/"), boyerMooreFinder(query)).empty;
+            return (string s) => !find(s.removechars(r"/[ 　]/"), boyerMooreFinder(query)).empty;
         }
+        assert(false);
+    }
+
+    auto matchFunFor(string query, Flag!"useMigemo" useMigemo, Flag!"useReverseSearch" useReverseSearch = No.useReverseSearch)
+    {
+        auto fun = simpleMatchFun(query, useMigemo);
 
         if (useReverseSearch)
         {

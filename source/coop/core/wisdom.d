@@ -27,8 +27,11 @@ class Wisdom {
     /// レシピ一覧
     Recipe[string] recipeList;
 
-    /// 素材を作成するレシピ名一覧
+    /// 素材(key)を作成するレシピ名一覧(value)
     RedBlackTree!string[string] rrecipeList;
+
+    /// 材料名(key)を使って生産できるアイテム名一覧(value)
+    RedBlackTree!string[string] ing2prodList;
 
     /// アイテム一覧
     Item[string] itemList;
@@ -62,6 +65,7 @@ class Wisdom {
         skillList = tmp.skillList;
 
         rrecipeList = genRRecipeList(recipeList.values);
+        ing2prodList = genIng2ProdList(recipeList.values);
         foodEffectList = readFoodEffectList(baseDir_);
 
         with(ItemType)
@@ -200,6 +204,28 @@ private:
                 else
                 {
                     ret[p].insert(r.name);
+                }
+            }
+        }
+        return ret;
+    }
+
+    auto genIng2ProdList(Recipe[] recipes) const pure
+    {
+        import std.algorithm;
+
+        RedBlackTree!string[string] ret;
+        foreach(r; recipes)
+        {
+            foreach(ip; cartesianProduct(r.ingredients.keys, r.products.keys))
+            {
+                if (ip[0] !in ret)
+                {
+                    ret[ip[0]] = make!(RedBlackTree!string)(ip[1]);
+                }
+                else
+                {
+                    ret[ip[0]].insert(ip[1]);
                 }
             }
         }
