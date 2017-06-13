@@ -145,8 +145,6 @@ class WebModel: ModelAPI
 
         import vibe.http.common;
 
-        import std.stdio;
-        writefln("only-products: %s, from-ingredients: %s", onlyProducts, fromIngredients);
         enforceHTTP(!(!onlyProducts && fromIngredients), HTTPStatus.BadRequest, "from-ingredients is valid only if only-products=true");
 
         return typeof(return)(wm.getItemList(query, cast(Flag!"useMigemo")useMigemo,
