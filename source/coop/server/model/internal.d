@@ -31,8 +31,8 @@ class WebModel: ModelAPI
 
     override @property GetInformationResult getInformation() const pure nothrow
     {
-        auto latest = "v1.2.1";
-        auto supported = "v1.2.1";
+        auto latest = "v1.2.2";
+        auto supported = "v1.2.2";
         return GetInformationResult(message, supported, latest);
     }
 
@@ -408,6 +408,14 @@ auto initItemInfo(Item item, WisdomModel wm)
         転送可 = item.transferable;
         スタック可 = item.stackable;
         ペットアイテム = item.petFoodInfo.byKeyValue.map!(kv => PetFoodInfo(cast(string)kv.key, kv.value)).front;
+        if (auto rs = item.name in wm.wisdom.rrecipeList)
+        {
+            レシピ = (*rs)[].map!(r => initRecipeLink(r)).array;
+        }
+        else
+        {
+            レシピ = [];
+        }
         備考 = item.remarks;
         アイテム種別 = cast(string)item.type;
         auto ex = wm.getExtraInfo(アイテム名);
