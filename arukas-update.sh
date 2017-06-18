@@ -13,7 +13,7 @@ arukas_container_update()
     \"type\": \"containers\",
     \"attributes\": {
       \"image_name\": \"$img:$ver\",
-      \"instances\": 5,
+      \"instances\": 2,
       \"ports\": [
         {
           \"number\": 8080,
