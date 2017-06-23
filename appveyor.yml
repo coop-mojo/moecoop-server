@@ -117,6 +117,7 @@ after_build:
   - mv moecoop-server-%Darch%.zip moecoop-server-trunk-%Dmodel%bit-debug.zip
   - archive.bat %Darch% release
   - mv moecoop-server-%Darch%.zip moecoop-server-trunk-%Dmodel%bit.zip
+  - git describe > views\version
   - type views\version
   - set /p CoopVer=<views\version
   - set CoopVer=%CoopVer:~1%

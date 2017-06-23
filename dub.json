@@ -8,8 +8,11 @@
     "authors": ["もじょんぬ <moe.e.coop@gmail.com>"],
 
     "stringImportPaths": ["views"],
-    "preBuildCommands": ["mkdir -p views",
-                         "git describe > views/version"],
+    "preBuildCommands-linux": ["mkdir -p views"],
+    "preBuildCommands-windows": ["mkdir views"],
+    "preBuildCommands": ["git describe > views/version"],
+    "postBuildCommands-windows": ["rd /s /q views"],
+
     "postBuildCommands": ["cp -r data/resource ."],
     "postBuildCommands-windows-x86_64": [
         "powershell -Command \"wget http://files.kaoriya.net/cmigemo/cmigemo-default-win64-20110227.zip -OutFile migemo.zip;\"",
