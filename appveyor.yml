@@ -121,5 +121,6 @@ after_build:
   - git describe > views\version
   - type views\version
   - set /p CoopVer=<views\version
+  - rd /s /q views
   - set CoopVer=%CoopVer:~1%
   - copy moecoop-server-trunk-%Dmodel%bit.zip moecoop-server-%CoopVer%-%Dmodel%bit.zip
