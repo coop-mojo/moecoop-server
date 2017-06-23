@@ -8,9 +8,10 @@
     "authors": ["もじょんぬ <moe.e.coop@gmail.com>"],
 
     "stringImportPaths": ["views"],
-    "preBuildCommands-linux": ["mkdir -p views"],
-    "preBuildCommands-windows": ["mkdir views"],
-    "preBuildCommands": ["git describe > views/version"],
+    "preBuildCommands-linux": ["mkdir -p views",
+                               "git describe > views/version"],
+    "preBuildCommands-windows": ["mkdir views",
+                                 "git describe > views\\version"],
     "postBuildCommands-windows": ["rd /s /q views"],
 
     "postBuildCommands": ["cp -r data/resource ."],
