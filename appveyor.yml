@@ -103,3 +103,21 @@ test_script:
   - dub --version
   - dub upgrade
   - dub test --arch=%Darch% --compiler=%DC%
+
+artifacts:
+  - path: moecoop-server-trunk-$(Dmodel)bit.zip
+    name: 生協の知恵袋APIサーバー 生焼け版($(Dmodel)bit)
+  - path: moecoop-server-trunk-$(Dmodel)bit-debug.zip
+    name: 生協の知恵袋APIサーバー 生焼けデバッグ版($(Dmodel)bit)
+  - path: moecoop-server-$(CoopVer)-$(Dmodel)bit.zip
+    name: 生協の知恵袋APIサーバー v$(CoopVer) ($(Dmodel)bit)
+
+after_build:
+  - archive.bat %Darch% debug
+  - mv moecoop-server-%Darch%.zip moecoop-server-trunk-%Dmodel%bit-debug.zip
+  - archive.bat %Darch% release
+  - mv moecoop-server-%Darch%.zip moecoop-server-trunk-%Dmodel%bit.zip
+  - type views\version
+  - set /p CoopVer=<views\version
+  - set CoopVer=%CoopVer:~1%
+  - copy moecoop-server-trunk-%Dmodel%bit.zip moecoop-server-%CoopVer%-%Dmodel%bit.zip
