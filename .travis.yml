@@ -43,6 +43,8 @@ script:
   - dub test --coverage --combined
   - if [ "$TRAVIS_OS_NAME" = "linux" ]; then
         ./archive.sh || exit 1;
+        mkdir -p views;
+        git describe > views/version;
         export version=$(cat views/version);
         docker build -t $MOECOOP_IMAGE:$version .;
         docker run $MOECOOP_IMAGE:$version -h || exit 1;
