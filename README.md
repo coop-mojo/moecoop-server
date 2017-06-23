@@ -13,6 +13,12 @@
 ## 使い方
 [マニュアル](http://docs.fukuro.coop.moe)をご覧ください。
 
+## オレオレ知恵袋サーバーを立てたい人向け
+知恵袋サーバーのプログラムは、生焼け版と [Docker 版](https://hub.docker.com/r/moecoop/moecoop/)のみの提供となります。
+生焼け版のダウンロードは以下からどうぞ！
+- [Windows 32ビット版](https://ci.appveyor.com/api/projects/coop-mojo/moecoop-server/artifacts/moecoop-server-trunk-32bit.zip?branch=master&job=Environment%3A%20DC%3Ddmd%2C%20DVersion%3D2.074.0%3B%20Platform%3A%20x86)
+- [Windows 64ビット版](https://ci.appveyor.com/api/projects/coop-mojo/moecoop-server/artifacts/moecoop-server-trunk-64bit.zip?branch=master&job=Environment%3A%20DC%3Ddmd%2C%20DVersion%3D2.074.0%3B%20Platform%3A%20x64)
+
 ## できること
 - バインダーに登録されているレシピの管理
   - キャラクターごとのバインダー管理
