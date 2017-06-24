@@ -8,7 +8,7 @@
     "authors": ["もじょんぬ <moe.e.coop@gmail.com>"],
 
     "stringImportPaths": ["views"],
-    "preBuildCommands-linux": ["mkdir -p views",
+    "preBuildCommands-posix": ["mkdir -p views",
                                "git describe > views/version"],
     "preBuildCommands-windows": ["mkdir views",
                                  "git describe > views\\version"],
