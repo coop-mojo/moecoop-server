@@ -1,8 +1,5 @@
 sudo: required
 
-dist: precise
-group: deprecated-2017Q2
-
 notifications:
   email: false
 
@@ -18,7 +15,6 @@ language: d
 
 d:
   - dmd-2.074.0
-  - ldc-1.1.1
 
 matrix:
   allow_failures:
@@ -37,14 +33,10 @@ cache:
 
 before_install:
   - git fetch --unshallow
-  - dub fetch doveralls
-
-before_script:
-  - dub upgrade
 
 script:
-  - dub test --coverage --combined
   - if [ "$TRAVIS_OS_NAME" = "linux" ]; then
+        docker run --rm -it -v $PWD:/src docker-fukuro dub test || exit 1
         ./archive.sh || exit 1;
         mkdir -p views;
         git describe > views/version;
@@ -52,10 +44,11 @@ script:
         docker build -t $MOECOOP_IMAGE:$version .;
         docker run $MOECOOP_IMAGE:$version -h || exit 1;
         docker images $MOECOOP_IMAGE:$version;
+    else
+        dub test || exit 1;
     fi
 
 after_success:
-  - dub run doveralls
   - if [ "$TRAVIS_OS_NAME" = "linux" -a "$TRAVIS_BRANCH" = "master" -a "$DC" = "dmd" ]; then
         echo "uploading docker image...";
         docker tag $MOECOOP_IMAGE:$version $MOECOOP_IMAGE;

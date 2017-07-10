@@ -1,8 +1,8 @@
 #!/bin/sh
 
-dub upgrade
+docker run --rm -it -v $PWD:/src docker-fukuro dub upgrade
 sed -i -e 's/^.\+openssl.\+$//' dub.selections.json
-dub build -b release
+docker run --rm -it -v $PWD:/src docker-fukuro dub build -b release
 strip fukurod
 tar cvzf moecoop.tgz fukurod LICENSE README.md resource
 rm fukurod
