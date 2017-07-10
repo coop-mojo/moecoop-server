@@ -32,7 +32,6 @@ cache:
     - $HOME/.dub
 
 before_install:
-  - docker pull moecoop/docker-fukuro
   - git fetch --unshallow
 
 script:
