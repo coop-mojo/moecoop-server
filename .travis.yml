@@ -32,11 +32,12 @@ cache:
     - $HOME/.dub
 
 before_install:
+  - docker pull moecoop/docker-fukuro
   - git fetch --unshallow
 
 script:
   - if [ "$TRAVIS_OS_NAME" = "linux" ]; then
-        docker run --rm -it -v $PWD:/src docker-fukuro dub test || exit 1
+        docker run --rm -it -v $PWD:/src moecoop/docker-fukuro dub test || exit 1
         ./archive.sh || exit 1;
         mkdir -p views;
         git describe > views/version;
