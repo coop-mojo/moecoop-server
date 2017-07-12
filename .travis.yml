@@ -34,7 +34,7 @@ cache:
 
 before_install:
   - git fetch --unshallow
-  - git fetch doveralls
+  - dub fetch doveralls
 
 before_script:
   - dub upgrade
