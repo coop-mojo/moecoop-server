@@ -40,7 +40,7 @@ before_script:
   - dub upgrade
 
 script:
-  - dub test --coverage
+  - dub test --coverage --combined
   - if [ "$TRAVIS_OS_NAME" = "linux" ]; then
         ./archive.sh || exit 1;
         mkdir -p views;
