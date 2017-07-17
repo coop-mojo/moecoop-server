@@ -3,7 +3,9 @@ LABEL maintainer="Mojo"
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN locale-gen ja_JP.UTF-8
+RUN apt-get update && apt-get install --no-install-suggests --no-install-recommends -y \
+    locales && \
+    locale-gen ja_JP.UTF-8
 
 ENV LANG ja_JP.UTF-8
 
