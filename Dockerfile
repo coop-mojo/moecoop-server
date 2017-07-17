@@ -1,13 +1,19 @@
-FROM frolvlad/alpine-glibc:alpine-3.5
+FROM ubuntu:latest
 LABEL maintainer="Mojo"
 
-RUN apk add --no-cache curl && \
-    curl -o /etc/apk/keys/ttanjo@gmail.com-58e06647.rsa.pub \
-         https://raw.githubusercontent.com/tom-tan/alpine-pkg-cmigemo/master/ttanjo%40gmail.com-58e06647.rsa.pub && \
-    curl -L -o cmigemo.apk https://github.com/tom-tan/alpine-pkg-cmigemo/releases/download/1.2.r38/cmigemo-1.2.r38-r0.apk && \
-    apk add --no-cache cmigemo.apk libevent && \
-    rm -rf cmigemo.apk /usr/share/migemo/cp932 /usr/share/migemo/euc-jp && \
-    apk del curl
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN locale-gen ja_JP.UTF-8
+
+ENV LANG ja_JP.UTF-8
+
+RUN apt-get update && \
+    apt-get install --no-install-suggests --no-install-recommends -y \
+            cmigemo libevent-2.0-5 libssl1.0.0 libevent-pthreads-2.0-5 && \
+    apt-get autoremove -y && \
+    apt-get clean && \
+    rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists/* && \
+    mkdir moecoop
 
 ADD moecoop.tgz /moecoop
 
