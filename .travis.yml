@@ -1,25 +1,9 @@
-sudo: required
+sudo: false
 
 notifications:
   email: false
 
-services:
-  - docker
-
-addons:
-  apt:
-    packages:
-      - libevent-dev
-
-language: d
-
-d:
-  - dmd-2.074.0
-  - ldc-1.1.1
-
-matrix:
-  allow_failures:
-    - d: ldc-1.1.1
+language: go
 
 os:
   - linux
@@ -28,34 +12,21 @@ os:
 env:
   - ARCH=x86_64
 
-cache:
-  directories:
-    - $HOME/.dub
-
 before_install:
   - git fetch --unshallow
-  - dub fetch doveralls
+  - go get -u github.com/go-swagger/go-swagger/cmd/swagger
 
 before_script:
-  - dub upgrade
+  - make cmd/fukurod-server/main.go
 
 script:
-  - dub test --coverage --combined
+  - make
   - if [ "$TRAVIS_OS_NAME" = "linux" ]; then
-        ./archive.sh || exit 1;
         mkdir -p views;
         export version=$(git describe);
-        docker build -t $MOECOOP_IMAGE:$version .;
-        docker run $MOECOOP_IMAGE:$version -h || exit 1;
-        docker images $MOECOOP_IMAGE:$version;
     fi
 
 after_success:
-  - dub run doveralls
   - if [ "$TRAVIS_OS_NAME" = "linux" -a "$TRAVIS_BRANCH" = "master" -a "$DC" = "dmd" ]; then
         echo "uploading docker image...";
-        docker tag $MOECOOP_IMAGE:$version $MOECOOP_IMAGE;
-        docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-        docker push $MOECOOP_IMAGE:$version;
-        docker push $MOECOOP_IMAGE:latest;
     fi
