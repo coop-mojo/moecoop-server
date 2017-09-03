@@ -1,13 +1,13 @@
 FROM ubuntu:latest
 LABEL maintainer="Mojo"
 
-ENV DEBIAN_FRONTEND=noninteractive
+ENV DEBIAN_FRONTEND=noninteractive \
+    LANG=ja_JP.UTF-8 \
+    PORT=8080
 
 RUN apt-get update && apt-get install --no-install-suggests --no-install-recommends -y \
     locales && \
     locale-gen ja_JP.UTF-8
-
-ENV LANG ja_JP.UTF-8
 
 RUN apt-get update && \
     apt-get install --no-install-suggests --no-install-recommends -y \
@@ -20,8 +20,6 @@ RUN apt-get update && \
 ADD moecoop.tgz /moecoop
 
 WORKDIR /moecoop
-
-ENV PORT 8080
 
 ENTRYPOINT ["./fukurod"]
 CMD []
