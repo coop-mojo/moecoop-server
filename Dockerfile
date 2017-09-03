@@ -1,8 +1,9 @@
 FROM ubuntu:latest
 LABEL maintainer="Mojo"
 
-ENV DEBIAN_FRONTEND=noninteractive \
-    LANG=ja_JP.UTF-8 \
+ARG DEBIAN_FRONTEND=noninteractive
+
+ENV LANG=ja_JP.UTF-8 \
     PORT=8080
 
 RUN apt-get update && apt-get install --no-install-suggests --no-install-recommends -y \
