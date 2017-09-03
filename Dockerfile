@@ -21,6 +21,7 @@ ADD moecoop.tgz /moecoop
 
 WORKDIR /moecoop
 
-EXPOSE 8080
+ENV PORT 8080
 
 ENTRYPOINT ["./fukurod"]
+CMD ["--port $PORT"]
