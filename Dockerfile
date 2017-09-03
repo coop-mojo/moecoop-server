@@ -22,5 +22,4 @@ ADD moecoop.tgz /moecoop
 
 WORKDIR /moecoop
 
-ENTRYPOINT ["./fukurod"]
-CMD []
+CMD ["./fukurod"]
