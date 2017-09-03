@@ -3,12 +3,12 @@ LABEL maintainer="Mojo"
 
 ARG DEBIAN_FRONTEND=noninteractive
 
-ENV LANG=ja_JP.UTF-8 \
-    PORT=8080
-
 RUN apt-get update && apt-get install --no-install-suggests --no-install-recommends -y \
     locales && \
     locale-gen ja_JP.UTF-8
+
+ENV LANG=ja_JP.UTF-8 \
+    PORT=8080
 
 RUN apt-get update && \
     apt-get install --no-install-suggests --no-install-recommends -y \
