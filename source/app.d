@@ -20,13 +20,14 @@ import vibe.d;
 
 void main(string[] args)
 {
+    import std.conv;
     import std.getopt;
     import std.process;
 
     import coop.server.model.internal;
     import coop.util;
 
-    ushort port = 8080;
+    auto port = environment.get("PORT", "8080").to!ushort;
     string msg;
 
     auto hinfo = args.getopt("port|p", &port);
