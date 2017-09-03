@@ -24,4 +24,4 @@ WORKDIR /moecoop
 ENV PORT 8080
 
 ENTRYPOINT ["./fukurod"]
-CMD ["--port", "${PORT}"]
+CMD []
