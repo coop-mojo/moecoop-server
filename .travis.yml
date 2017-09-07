@@ -58,4 +58,7 @@ after_success:
         docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
         docker push $MOECOOP_IMAGE:$version;
         docker push $MOECOOP_IMAGE:latest;
+        docker login -u=_ -p="$HEROKU_TOKEN" registry.heroku.com;
+        docker tag $MOECOOP_IMAGE:latest registry.heroku.com/moecoop-server/web;
+        docker push registry.heroku.com/moecoop-server/web;
     fi
