@@ -24,12 +24,13 @@
     ],
 
     "dependencies": {
-        "derelict-util": "==2.0.6",
-        "vibe-d": ">=0.8.0",
+        "derelict-util": "==2.1.0",
+        "vibe-d": ">=0.8.1",
+        "vibe-d:tls": "*",
         "moecoop-server:common": "*"
     },
     "subConfigurations": {
-        "vibe-d:tls": "botan"
+        "vibe-d:tls": "notls"
     },
     "subPackages": [
         "./common"
