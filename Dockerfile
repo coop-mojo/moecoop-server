@@ -1,21 +1,13 @@
-FROM ubuntu:latest
+FROM frolvlad/alpine-glibc:latest
 LABEL maintainer="Mojo"
 
-ARG DEBIAN_FRONTEND=noninteractive
+ENV PORT=8080
 
-RUN apt-get update && apt-get install --no-install-suggests --no-install-recommends -y \
-    locales && \
-    locale-gen ja_JP.UTF-8
-
-ENV LANG=ja_JP.UTF-8 \
-    PORT=8080
-
-RUN apt-get update && \
-    apt-get install --no-install-suggests --no-install-recommends -y \
-            cmigemo libevent-2.0-5 libssl1.0.0 libevent-pthreads-2.0-5 && \
-    apt-get autoremove -y && \
-    apt-get clean && \
-    rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists/* && \
+RUN apk add --no-cache curl && \
+    curl -Lo cmigemo.apk https://github.com/tom-tan/alpine-pkg-cmigemo/releases/download/1.2.r38/cmigemo-1.2.r38-r0.apk && \
+    apk add --no-cache --allow-untrusted cmigemo.apk libevent && \
+    rm -rf cmigemo.apk /usr/share/migemo/cp932 /usr/share/migemo/utf-8 && \
+    apk del curl && \
     mkdir moecoop
 
 ADD moecoop.tgz /moecoop
