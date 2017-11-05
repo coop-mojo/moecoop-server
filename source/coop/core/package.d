@@ -171,9 +171,9 @@ class WisdomModel
         import std.algorithm;
         import std.array;
         import std.range;
-        import std.string;
+        import std.regex;
 
-        auto input = query.removechars(r"/[ 　]/");
+        auto input = query.replaceAll(ctRegex!r"[ 　]", "");
         auto fun = simpleMatchFun(input, useMigemo);
         if (canBeProduced)
         {
@@ -269,9 +269,9 @@ private:
     {
         import std.algorithm;
         import std.array;
-        import std.string;
+        import std.regex;
 
-        auto input = query.removechars(r"/[ 　]/");
+        auto input = query.replaceAll(ctRegex!r"[ 　]", "");
         auto queryFun = matchFunFor(input, useMigemo, useReverseSearch);
 
         return allRecipes.filter!queryFun.array;
@@ -286,7 +286,7 @@ private:
             assert(migemo);
             try{
                 auto q = migemo.query(query).regex;
-                return (string s) => !s.removechars(r"/[ 　]/").matchFirst(q).empty;
+                return (string s) => !s.replaceAll(ctRegex!r"[ 　]", "").matchFirst(q).empty;
             } catch(RegexException e) {
                 // use default matchFun
             }
@@ -296,7 +296,7 @@ private:
             import std.algorithm;
             import std.range;
 
-            return (string s) => !find(s.removechars(r"/[ 　]/"), boyerMooreFinder(query)).empty;
+            return (string s) => !find(s.replaceAll(ctRegex!r"[ 　]", ""), boyerMooreFinder(query)).empty;
         }
         assert(false);
     }
