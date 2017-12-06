@@ -9,9 +9,12 @@ import std.typecons;
 
 /// for elements/0
 alias RecipeInfo = Tuple!(string, "name", string, "parentGroup");
+/// Note: isLeaf は木構造の葉かどうかを返す
 alias MaterialInfo = Tuple!(string, "name", bool, "isLeaf");
 
 /// for elements/4
+/// Note: isIntermediate は中間素材かどうかを返す。isLeaf とは基準が異なるので注意！
+/// 中間素材: 根でも葉でもない素材
 alias MatTuple = Tuple!(int, "num", bool, "isIntermediate");
 
 class RecipeGraph
@@ -107,7 +110,9 @@ class RecipeGraph
                 if (req > ow)
                 {
                     leftover[t] = rs[r]*nPerComb-(req-ow);
-                    ms[t].isIntermediate = true;
+                    if (t !in targets) {
+                        ms[t].isIntermediate = true;
+                    }
                 }
                 else
                 {
@@ -718,7 +723,7 @@ unittest
 
     assert(tpl.必要素材.map!"a.アイテム名".equal(["精米", "玄米"]));
     assert(tpl.必要素材.map!"a.個数".equal([1, 1]));
-    assert(tpl.必要素材.map!(a => a.追加情報["中間素材"].get!bool).equal([true, false]));
+    assert(tpl.必要素材.map!(a => a.追加情報["中間素材"].get!bool).equal([false, false]));
     assert(tpl.余り物.map!"a.アイテム名".equal(["精米", "米ぬか"]));
     assert(tpl.余り物.map!"a.個数".equal([1, 1]));
 }
@@ -795,7 +800,7 @@ unittest
                [1, 1, 1, 1, 1, 1, 1, 1,
                 2, 1, 2, 1]));
     assert(tpl.必要素材.map!(a => a.追加情報["中間素材"].get!bool).equal(
-               [true, true, false, true, true, false, false, true,
+               [false, true, false, true, true, false, false, true,
                 true, false, false, false]));
 
     assert(tpl.余り物.map!"a.アイテム名".equal(["チーズ パイ", "小麦粉", "塩"]));
