@@ -228,20 +228,18 @@ class WisdomModel
     /// 
     auto getMenuRecipeResult(int[string] targets, int[string] owned, string[string] preference, RedBlackTree!string terminals)
     {
-        import std.algorithm;
-        import std.array;
         import std.conv;
-        import std.range;
         import coop.core.recipe_graph;
 
-        enum cmp = "a[0] < b[0]";
-        auto prefPair = getDefaultPreference.byPair.array;
-        prefPair.sort!cmp;
-        auto userPrefPair = preference.byPair.array;
-        userPrefPair.sort!cmp;
-        auto pref = nWayUnion!cmp([userPrefPair, prefPair]).assocArray;
+        foreach(k, v; getDefaultPreference)
+        {
+            if (k !in preference)
+            {
+                preference[k] = v;
+            }
+        }
 
-        auto graph = new RecipeGraph(targets.keys.to!(string[]), wisdom, pref);
+        auto graph = new RecipeGraph(targets.keys.to!(string[]), wisdom, preference);
         return graph.elements(targets, owned, terminals);
     }
 
