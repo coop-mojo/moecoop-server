@@ -30,7 +30,7 @@
         "moecoop-server:common": "*"
     },
     "subConfigurations": {
-        "vibe-d:tls": "none"
+        "vibe-d:tls": "notls"
     },
     "subPackages": [
         "./common"
