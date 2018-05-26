@@ -749,8 +749,6 @@ nothrow unittest
 {
     import std.traits: FieldNameTuple;
 
-    import coop.core.item: Item, PetFoodType;
-
     Item orig;
     with(orig)
     {
@@ -775,8 +773,6 @@ nothrow unittest
 nothrow unittest
 {
     import std.conv;
-
-    import coop.core.item: Item, PetFoodType;
 
     Item orig;
     orig.name = "テスト";
