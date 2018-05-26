@@ -25,7 +25,7 @@
 
     "dependencies": {
         "derelict-util": "==2.1.0",
-        "vibe-d": "==0.8.1",
+        "vibe-d": "==0.8.3",
         "vibe-d:tls": "*",
         "moecoop-server:common": "*"
     },
