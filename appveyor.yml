@@ -49,20 +49,18 @@ install:
             elseif($env:DC -eq "ldc"){
               if($env:platform -eq "x86"){
                 $env:DConf = "m32";
-                $env:Dmodel = "32";
               }
               elseif($env:platform -eq "x64"){
                 $env:DConf = "m64";
-                $env:Dmodel = "64";
               }
               echo "downloading ...";
               $env:toolchain = "msvc";
               $version = $env:DVersion;
-              Invoke-WebRequest "https://github.com/ldc-developers/ldc/releases/download/v$($version)/ldc2-$($version)-win$($env:Dmodel)-msvc.zip" -OutFile "c:\ldc.zip";
+              Invoke-WebRequest "https://github.com/ldc-developers/ldc/releases/download/v$($version)/ldc2-$($version)-windows-$($env:platform).7z" -OutFile "c:\ldc.7z";
               echo "finished.";
               pushd c:\\;
-              7z x ldc.zip > $null;
-              mv ldc2-$($version)-win$($env:Dmodel)-msvc ldc2;
+              7z x ldc.7z > $null;
+              mv ldc2-$($version)-windows-$($env:platform) ldc2;
               popd;
             }
         }
@@ -74,12 +72,10 @@ before_build:
   - ps: if($env:platform -eq "x86"){
             $env:compilersetupargs = "x86";
             $env:Darch = "x86";
-            $env:Dmodel = "32";
         }
         elseif($env:platform -eq "x64"){
             $env:compilersetupargs = "amd64";
             $env:Darch = "x86_64";
-            $env:Dmodel = "64";
         }
   - ps : if($env:DC -eq "dmd"){
            $env:PATH += ";C:\dmd2\windows\bin;";
