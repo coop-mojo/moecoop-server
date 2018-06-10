@@ -55,7 +55,7 @@ after_success:
   - if [ "$TRAVIS_OS_NAME" = "linux" -a "$TRAVIS_BRANCH" = "master" -a "$DC" = "dmd" ]; then
         echo "uploading docker image...";
         docker tag $MOECOOP_IMAGE:$version $MOECOOP_IMAGE;
-        docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+        echo "$DOCKER_PASSWORD" | docker login -u="$DOCKER_USERNAME" --password-stdin;
         docker push $MOECOOP_IMAGE:$version;
         docker push $MOECOOP_IMAGE:latest;
         ./update-heroku.sh "$HEROKU_TOKEN" "$MOECOOP_IMAGE";
