@@ -115,7 +115,7 @@ class WisdomModel
 
     /// binder に収録されているレシピ一覧を返す
     auto getRecipeList(string query, Binder binder,
-                       Flag!"useMetaSearch" useMetaSearch, Flag!"useMigemo" useMigemo, Flag!"useReverseSearch" useReverseSearch = No.useReverseSearch)
+                       Flag!"useMetaSearch" useMetaSearch, Flag!"useMigemo" useMigemo, Flag!"useReverseSearch" useReverseSearch = No.useReverseSearch) @safe
     {
         import std.algorithm;
         import std.array;
@@ -129,7 +129,7 @@ class WisdomModel
     /// スキルカテゴリ category に分類されているレシピ一覧を返す
     auto getRecipeList(string query, Category category,
                        Flag!"useMetaSearch" useMetaSearch, Flag!"useMigemo" useMigemo, Flag!"useReverseSearch" useReverseSearch,
-                       SortOrder order)
+                       SortOrder order) @safe
     {
         import std.algorithm;
         import std.array;
@@ -158,13 +158,13 @@ class WisdomModel
 
     /// query にヒットするレシピ一覧を返す。
     /// Yes.useReverseSearch の場合には、query にヒットするアイテムを材料にするレシピ一覧を返す
-    auto getRecipeList(string query, Flag!"useMigemo" useMigemo, Flag!"useReverseSearch" useReverseSearch)
+    auto getRecipeList(string query, Flag!"useMigemo" useMigemo, Flag!"useReverseSearch" useReverseSearch) @safe
     {
         return getRecipeList(query, Category.init, Yes.useMetaSearch, useMigemo, useReverseSearch, SortOrder.ByName);
     }
 
     /// query にヒットするアイテム一覧を返す
-    auto getItemList(string query, Flag!"useMigemo" useMigemo, Flag!"canBeProduced" canBeProduced, Flag!"useReverseSearch" fromIngredients)
+    auto getItemList(string query, Flag!"useMigemo" useMigemo, Flag!"canBeProduced" canBeProduced, Flag!"useReverseSearch" fromIngredients) @safe
     in {
         assert(!(!canBeProduced && fromIngredients), "fromIngredients is valid only if canBeProduced == true");
     } body {
@@ -200,8 +200,8 @@ class WisdomModel
         else
         {
             assert(!fromIngredients);
-            return chain(wisdom.itemList.keys.dup,
-                         wisdom.rrecipeList.keys.dup)
+            return chain(wisdom.itemList.byKey.array,
+                         wisdom.rrecipeList.byKey.array)
                 .sort
                 .uniq
                 .array
@@ -228,6 +228,7 @@ class WisdomModel
     /// 
     auto getMenuRecipeResult(int[string] targets, int[string] owned, string[string] preference, RedBlackTree!string terminals)
     {
+        import std.array;
         import std.conv;
         import coop.core.recipe_graph;
 
@@ -239,7 +240,7 @@ class WisdomModel
             }
         }
 
-        auto graph = new RecipeGraph(targets.keys.to!(string[]), wisdom, preference);
+        auto graph = new RecipeGraph(targets.byKey.array, wisdom, preference);
         return graph.elements(targets, owned, terminals);
     }
 
@@ -263,7 +264,7 @@ private:
 
     auto getQueryResultBase(string query, string[] allRecipes,
                             Flag!"useMetaSearch" useMetaSearch, Flag!"useMigemo" useMigemo,
-                            Flag!"useReverseSearch" useReverseSearch = No.useReverseSearch)
+                            Flag!"useReverseSearch" useReverseSearch = No.useReverseSearch) @safe
     {
         import std.algorithm;
         import std.array;
@@ -275,7 +276,7 @@ private:
         return allRecipes.filter!queryFun.array;
     }
 
-    auto simpleMatchFun(string query, Flag!"useMigemo" useMigemo)
+    auto simpleMatchFun(string query, Flag!"useMigemo" useMigemo) @safe
     {
         import std.regex;
         import std.string;
@@ -284,7 +285,7 @@ private:
             assert(migemo);
             try{
                 auto q = migemo.query(query).regex;
-                return (string s) => !s.replaceAll(ctRegex!r"[ 　]", "").matchFirst(q).empty;
+                return (string s) @safe => !s.replaceAll(ctRegex!r"[ 　]", "").matchFirst(q).empty;
             } catch(RegexException e) {
                 // use default matchFun
             }
@@ -294,23 +295,23 @@ private:
             import std.algorithm;
             import std.range;
 
-            return (string s) => !find(s.replaceAll(ctRegex!r"[ 　]", ""), boyerMooreFinder(query)).empty;
+            return (string s) @safe => !find(s.replaceAll(ctRegex!r"[ 　]", ""), boyerMooreFinder(query)).empty;
         }
         assert(false);
     }
 
-    auto matchFunFor(string query, Flag!"useMigemo" useMigemo, Flag!"useReverseSearch" useReverseSearch = No.useReverseSearch)
+    auto matchFunFor(string query, Flag!"useMigemo" useMigemo, Flag!"useReverseSearch" useReverseSearch = No.useReverseSearch) @safe
     {
         auto fun = simpleMatchFun(query, useMigemo);
 
         if (useReverseSearch)
         {
             import std.algorithm;
-            return (string s) => wisdom.recipeFor(s).ingredients.keys.any!(ing => fun(ing));
+            return (string s) @safe => wisdom.recipeFor(s).ingredients.byKey.any!(ing => fun(ing));
         }
         else
         {
-            return (string s) => fun(s);
+            return (string s) @safe => fun(s);
         }
         assert(false);
     }

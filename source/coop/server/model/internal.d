@@ -45,7 +45,7 @@ class WebModel: ModelAPI
         return typeof(return)(wm.getBinderCategories.map!(b => initBinderLink(b)).array);
     }
 
-    override GetRecipesResult getBinderRecipes(string binder, string query, bool migemo, bool rev, string key, string fs)
+    override GetRecipesResult getBinderRecipes(string binder, string query, bool migemo, bool rev, string key, string fs) @safe
     {
         import std.algorithm;
         import std.array;
@@ -83,7 +83,7 @@ class WebModel: ModelAPI
         return typeof(return)(wm.getSkillCategories.map!(s => initSkillLink(s)).array);
     }
 
-    override GetRecipesResult getSkillRecipes(string skill, string query, bool migemo, bool rev, string key, string fs)
+    override GetRecipesResult getSkillRecipes(string skill, string query, bool migemo, bool rev, string key, string fs) @safe
     {
         import std.algorithm;
         import std.array;
@@ -118,7 +118,7 @@ class WebModel: ModelAPI
         return ["バフ一覧": wm.wisdom.foodEffectList.byKey.map!(k => initBufferLink(k)).array];
     }
 
-    override GetRecipesResult getRecipes(string query, bool useMigemo, bool useReverseSearch, string key, string fs)
+    override GetRecipesResult getRecipes(string query, bool useMigemo, bool useReverseSearch, string key, string fs) @safe
     {
         import std.algorithm;
         import std.range;
@@ -139,7 +139,7 @@ class WebModel: ModelAPI
         return typeof(return)(lst.map!toRecipeLink.array);
     }
 
-    override GetItemsResult getItems(string query, bool useMigemo, bool onlyProducts, bool fromIngredients)
+    override GetItemsResult getItems(string query, bool useMigemo, bool onlyProducts, bool fromIngredients) @safe
     {
         import std.algorithm;
         import std.range;
