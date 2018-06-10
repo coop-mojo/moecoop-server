@@ -25,25 +25,25 @@ class WisdomModel
     }
 
     /// バインダー一覧を返す
-    @property auto getBinderCategories() const pure nothrow
+    @property auto getBinderCategories() @safe const pure nothrow
     {
         return wisdom.binders;
     }
 
     /// スキル一覧を返す
-    @property auto getSkillCategories() const pure nothrow
+    @property auto getSkillCategories() @safe const pure nothrow
     {
         return wisdom.recipeCategories;
     }
 
     /// レシピ情報を返す
-    auto getRecipe(string name)
+    auto getRecipe(string name) @safe
     {
         return wisdom.recipeFor(name);
     }
 
     /// アイテム情報を返す
-    auto getItem(string name)
+    auto getItem(string name) @safe
     {
         import coop.core.item;
 
@@ -62,13 +62,13 @@ class WisdomModel
     }
 
     /// レシピが収録されているバインダーを返す
-    auto getBindersFor(string name)
+    auto getBindersFor(string name) @safe
     {
         return wisdom.bindersFor(name);
     }
 
     /// アイテムの固有情報を返す
-    auto getExtraInfo(string name)
+    auto getExtraInfo(string name) @safe
     {
         import std.typecons;
         import coop.core.item;
@@ -99,7 +99,7 @@ class WisdomModel
     }
 
     /// 飲食物のバフ効果を返す
-    auto getFoodEffect(string name)
+    auto getFoodEffect(string name) @safe
     {
         if (auto einfo = name in wisdom.foodEffectList)
         {
@@ -121,7 +121,7 @@ class WisdomModel
         import std.array;
 
         auto allRecipes = useMetaSearch ?
-                          wisdom.binderList.values.joiner.array :
+                          wisdom.binderList.byValue.joiner.array :
                           wisdom.binderList[cast(string)binder];
         return getQueryResultBase(query, allRecipes, useMetaSearch, useMigemo, useReverseSearch);
     }
@@ -135,7 +135,7 @@ class WisdomModel
         import std.array;
 
         auto allRecipes = useMetaSearch ?
-                          wisdom.skillList.values.map!"a[].array".joiner.array :
+                          wisdom.skillList.byValue.map!"a[].array".joiner.array :
                           wisdom.skillList[cast(string)category][].array;
         auto queryResult = getQueryResultBase(query, allRecipes, useMetaSearch, useMigemo, useReverseSearch);
         final switch(order) with(SortOrder)
@@ -192,7 +192,7 @@ class WisdomModel
             else
             {
                 return wisdom.rrecipeList
-                    .keys
+                    .byKey
                     .filter!fun
                     .array;
             }

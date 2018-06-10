@@ -86,12 +86,12 @@ class Wisdom {
         vendorPriceList = genVendorPriceList(vendorList.values);
     }
 
-    @property auto recipeCategories() const pure nothrow
+    @property auto recipeCategories() @safe const pure nothrow
     {
         import std.algorithm;
         import std.array;
 
-        return skillList.keys.sort().array;
+        return skillList.byKey.array.sort.array;
     }
 
     auto recipesIn(Category name) @safe pure nothrow
@@ -101,12 +101,12 @@ class Wisdom {
         return skillList[cast(string)name];
     }
 
-    @property auto binders() const pure nothrow
+    @property auto binders() @safe const pure nothrow
     {
         import std.algorithm;
         import std.array;
 
-        return binderList.keys.sort().array;
+        return binderList.byKey.array.sort.array;
     }
 
     auto recipesIn(Binder name) @safe pure nothrow
@@ -116,12 +116,12 @@ class Wisdom {
         return binderList[cast(string)name];
     }
 
-    auto recipeFor(string recipeName) pure
+    auto recipeFor(string recipeName) @safe pure
     {
         return recipeList.get(recipeName, Recipe.init);
     }
 
-    auto bindersFor(string recipeName) pure nothrow
+    auto bindersFor(string recipeName) @safe pure nothrow
     {
         import std.algorithm;
         import std.range;

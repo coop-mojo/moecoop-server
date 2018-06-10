@@ -37,7 +37,7 @@ class WebModel: ModelAPI
         return GetInformationResult(message, supported, latest);
     }
 
-    override @property GetBinderCategoriesResult getBinderCategories() const pure nothrow
+    override @property GetBinderCategoriesResult getBinderCategories() @safe const pure nothrow
     {
         import std.algorithm;
         import std.range;
@@ -75,7 +75,7 @@ class WebModel: ModelAPI
         return typeof(return)(lst.map!toRecipeLink.array);
     }
 
-    override @property GetSkillCategoriesResult getSkillCategories() const pure nothrow
+    override @property GetSkillCategoriesResult getSkillCategories() @safe const pure nothrow
     {
         import std.algorithm;
         import std.range;
@@ -153,7 +153,7 @@ class WebModel: ModelAPI
                                 .map!(i => initItemLink(i)).array);
     }
 
-    override RecipeInfo getRecipe(string _recipe)
+    override RecipeInfo getRecipe(string _recipe) @safe
     {
         import std.array;
         import vibe.http.common;
