@@ -23,13 +23,14 @@ class WebModel: ModelAPI
         this.message = msg;
     }
 
-    override @property GetVersionResult getVersion() const
+    override @property GetVersionResult getVersion() @safe const
     {
         import coop.util;
+        string[string] hash;
         return GetVersionResult(Version);
     }
 
-    override @property GetInformationResult getInformation() const pure nothrow
+    override @property GetInformationResult getInformation() @safe const pure nothrow
     {
         auto latest = "v1.2.2";
         auto supported = "v1.2.2";
@@ -109,12 +110,12 @@ class WebModel: ModelAPI
         return typeof(return)(lst.map!toRecipeLink.array);
     }
 
-    override BufferLink[][string] getBuffers()
+    override BufferLink[][string] getBuffers() @safe
     {
         import std.algorithm;
         import std.range;
 
-        return ["バフ一覧": wm.wisdom.foodEffectList.keys.map!(k => initBufferLink(k)).array];
+        return ["バフ一覧": wm.wisdom.foodEffectList.byKey.map!(k => initBufferLink(k)).array];
     }
 
     override GetRecipesResult getRecipes(string query, bool useMigemo, bool useReverseSearch, string key, string fs)
@@ -177,7 +178,7 @@ class WebModel: ModelAPI
     /*
      * 2種類以上レシピがあるアイテムに関して、レシピ候補の一覧を返す
      */
-    override GetMenuRecipeOptionsResult getMenuRecipeOptions()
+    override GetMenuRecipeOptionsResult getMenuRecipeOptions() @safe
     {
         import std.algorithm;
         import std.range;
@@ -188,7 +189,7 @@ class WebModel: ModelAPI
         with(typeof(return))
         {
             return typeof(return)(wm.getDefaultPreference
-                                    .keys
+                                    .byKey
                                     .map!(k => RetElem(ItemLink(k),
                                                        wm.wisdom
                                                          .rrecipeList[k][]
