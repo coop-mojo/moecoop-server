@@ -22,7 +22,7 @@ int referenceCostFor(string item,
                      RedBlackTree!string[string] rrecipeMap,
                      int[string] vendingPriceMap, int[string] questPriceMap,
                      int[string] procurementMap,
-                     RedBlackTree!string visited = new RedBlackTree!string)
+                     RedBlackTree!string visited = new RedBlackTree!string) @safe
 {
     import std.algorithm;
 
@@ -45,7 +45,7 @@ int referenceCostFor(string item,
         visited.insert(item);
 
         procRecipeCost = (*rs)[].map!(r => recipeMap[r])
-                                .filter!(r => r.ingredients.keys.all!(i => i !in visited))
+                                .filter!(r => r.ingredients.byKey.all!(i => i !in visited))
                                 .map!(r => r.ingredients
                                             .byKeyValue
                                             .fold!((a, b) =>
@@ -74,7 +74,7 @@ int referenceCostFor(string item,
 }
 
 // 単純な場合
-unittest
+@safe unittest
 {
     Item roastSnakeMeat = { name: "ロースト スネーク ミート", price: 8 };
     Item snakeMeat = { name: "ヘビの肉", price: 5 };
@@ -116,7 +116,7 @@ unittest
 }
 
 // 必要素材がループする場合
-unittest
+@safe unittest
 {
     Item ironBar = { name: "鉄の棒", price: 12 };
     Item ironIngot = { name: "アイアンインゴット", price: 10 };

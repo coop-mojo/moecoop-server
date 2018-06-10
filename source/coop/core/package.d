@@ -245,7 +245,7 @@ class WisdomModel
     }
 
     ///
-    auto costFor(string item, int[string] procs)
+    auto costFor(string item, int[string] procs) @safe
     {
         import coop.core.price;
 
