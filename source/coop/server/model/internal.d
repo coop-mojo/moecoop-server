@@ -162,7 +162,7 @@ class WebModel: ModelAPI
         return initRecipeInfo(enforceHTTP(wm.getRecipe(_recipe), HTTPStatus.notFound, "No such recipe"), wm);
     }
 
-    override ItemInfo getItem(string _item)
+    override ItemInfo getItem(string _item) @safe
     {
         return postItem(_item, (int[string]).init);
     }
@@ -199,7 +199,7 @@ class WebModel: ModelAPI
         }
     }
 
-    override PostMenuRecipePreparationResult postMenuRecipePreparation(string[] 作成アイテム)
+    override PostMenuRecipePreparationResult postMenuRecipePreparation(string[] 作成アイテム) @safe
     {
         import std.algorithm;
         import std.range;
@@ -230,7 +230,7 @@ class WebModel: ModelAPI
                 }).array);
     }
 
-    override PostMenuRecipeResult postMenuRecipe(int[string] 作成アイテム, int[string] 所持アイテム, string[string] 使用レシピ, string[] 直接調達アイテム)
+    override PostMenuRecipeResult postMenuRecipe(int[string] 作成アイテム, int[string] 所持アイテム, string[string] 使用レシピ, string[] 直接調達アイテム) @safe
     {
         import std.algorithm;
         import std.conv;
