@@ -218,7 +218,7 @@ class WisdomModel
     }
 
     /// 
-    auto getMenuRecipeResult(string[] targets)
+    auto getMenuRecipeResult(string[] targets) @safe
     {
         import coop.core.recipe_graph;
         auto graph = new RecipeGraph(targets, wisdom, null);
@@ -226,7 +226,7 @@ class WisdomModel
     }
 
     /// 
-    auto getMenuRecipeResult(int[string] targets, int[string] owned, string[string] preference, RedBlackTree!string terminals)
+    auto getMenuRecipeResult(int[string] targets, int[string] owned, string[string] preference, RedBlackTree!string terminals) @safe
     {
         import std.array;
         import std.conv;

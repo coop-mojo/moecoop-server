@@ -167,7 +167,7 @@ class WebModel: ModelAPI
         return postItem(_item, (int[string]).init);
     }
 
-    override ItemInfo postItem(string _item, int[string] 調達価格)
+    override ItemInfo postItem(string _item, int[string] 調達価格) @safe
     {
         import vibe.http.common;
         auto info = initItemInfo(enforceHTTP(wm.getItem(_item), HTTPStatus.notFound, "No such item"), wm);
@@ -390,7 +390,7 @@ auto initRecipeInfo(Recipe r, WisdomModel wm)
     return ri;
 }
 
-auto initItemInfo(Item item, WisdomModel wm)
+auto initItemInfo(Item item, WisdomModel wm) @trusted
 {
     import std.algorithm;
     import std.conv;

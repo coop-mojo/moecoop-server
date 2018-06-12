@@ -24,7 +24,7 @@ class RecipeGraph
     import coop.core.wisdom;
     import coop.core.recipe;
 
-    this(string[] names, Wisdom w, string[string] pref = defaultPreference)
+    this(string[] names, Wisdom w, string[string] pref = defaultPreference) @safe
     in {
         import std.range;
         assert(!names.empty);
@@ -36,10 +36,10 @@ class RecipeGraph
         recipeFor = r => w.recipeFor(r);
         rrecipeFor = i => i in w.rrecipeList;
         names.each!(n => init(n, cast(RecipeContainer)null));
-        roots = materials_.values.filter!"a.parents.empty".array.schwartzSort!"a.name".array;
+        roots = materials_.byValue.filter!"a.parents.empty".array.schwartzSort!"a.name".array;
     }
 
-    this(string[] names, Recipe[string] recipeMap, RedBlackTree!string[string] rrecipeMap, string[string] pref = defaultPreference)
+    this(string[] names, Recipe[string] recipeMap, RedBlackTree!string[string] rrecipeMap, string[string] pref = defaultPreference) @safe
     in {
         import std.range;
         assert(!names.empty);
@@ -51,10 +51,10 @@ class RecipeGraph
         recipeFor = r => recipeMap[r];
         rrecipeFor = i => i in rrecipeMap;
         names.each!(n => init(n, cast(RecipeContainer)null));
-        roots = materials_.values.filter!"a.parents.empty".array.schwartzSort!"a.name".array;
+        roots = materials_.byValue.filter!"a.parents.empty".array.schwartzSort!"a.name".array;
     }
 
-    auto elements() pure
+    auto elements() @safe pure
     {
         import std.algorithm;
         import std.range;
@@ -77,11 +77,11 @@ class RecipeGraph
     /++
      + targets を作るのに必要なレシピ，素材，作成時の余り素材を返す
      +/
-    auto elements(int[string] targets, int[string] owned, RedBlackTree!string mats = new RedBlackTree!string)
+    auto elements(int[string] targets, int[string] owned, RedBlackTree!string mats = new RedBlackTree!string) @safe
     in {
         import std.range;
 
-        assert(!targets.keys.empty);
+        assert(!targets.byKey.empty);
     } body {
         import std.algorithm;
         import std.array;
@@ -89,7 +89,7 @@ class RecipeGraph
         import coop.server.model.internal;
 
         // target に指定されているものは、mats に入っている場合でも作成を省略しない
-        mats.removeKey(targets.keys);
+        mats.removeKey(targets.byKey);
         int[string] rs, leftover;
         MatTuple[string] ms = targets.byKeyValue.map!(kv => tuple(kv.key, MatTuple(kv.value, false))).assocArray;
         foreach(r; elements.recipes.map!"a.name")
@@ -226,7 +226,7 @@ private:
     /++
      + Init tree from a given material name
      +/
-    void init(string name, RecipeContainer parent, bool fromChildren = false) pure
+    void init(string name, RecipeContainer parent, bool fromChildren = false) @safe pure
     out {
         import std.algorithm;
         assert(materials_[name].children.all!(c => name in c.parents));
@@ -275,7 +275,7 @@ private:
     /++
      + Init tree from a given recipe name
      +/
-    void init(string name, MaterialContainer parent) pure
+    void init(string name, MaterialContainer parent) @safe pure
     in {
         assert(parent !is null);
     } out {
@@ -289,7 +289,7 @@ private:
         auto recipe = recipes_.get(name, new RecipeContainer(name));
         auto rr = recipeFor(name);
         // 精米/米ぬか のような、複数生成物が出るレシピ対策
-        foreach(r; rr.products.keys)
+        foreach(r; rr.products.byKey)
         {
             if (r !in materials_)
             {
@@ -304,11 +304,11 @@ private:
         }
         recipes_[name] = recipe;
 
-        rr.ingredients.keys.each!(m => this.init(m, recipe));
-        recipe.children = rr.ingredients.keys.map!(m => materials_[m]).array;
+        rr.ingredients.byKey.each!(m => this.init(m, recipe));
+        recipe.children = rr.ingredients.byKey.map!(m => materials_[m]).array;
     }
 
-    void visit(MaterialContainer material, ref RedBlackTree!string rs, ref RedBlackTree!string ms) pure
+    void visit(MaterialContainer material, ref RedBlackTree!string rs, ref RedBlackTree!string ms) @safe pure
     {
         import std.algorithm;
 
@@ -321,7 +321,7 @@ private:
         orderedMaterials_ ~= material.name;
     }
 
-    void visit(RecipeContainer recipe, ref RedBlackTree!string rs, ref RedBlackTree!string ms) pure
+    void visit(RecipeContainer recipe, ref RedBlackTree!string rs, ref RedBlackTree!string ms) @safe pure
     {
         import std.algorithm;
 
@@ -331,7 +331,7 @@ private:
         orderedRecipes_ ~= recipe.name;
     }
 
-    auto visit() pure
+    auto visit() @safe pure
     out {
         import std.algorithm;
 
@@ -358,8 +358,8 @@ private:
     string[string] preferences_;
     string[] orderedRecipes_;
     string[] orderedMaterials_;
-    Recipe delegate(string) pure recipeFor;
-    RedBlackTree!string* delegate(string) pure rrecipeFor;
+    Recipe delegate(string) @safe pure recipeFor;
+    RedBlackTree!string* delegate(string) @safe pure rrecipeFor;
 }
 
 
