@@ -111,10 +111,14 @@ auto checkedAssocArray(Range)(Range r) if (isInputRange!Range)
                 if (auto it = key in r)
                 {
                     import std.stdio;
-                    writefln("キーが重複しています: %s", key);
+                    writef("キーが重複しています: %s", key);
                     static if (hasMember!(ValueType, "file") && is(typeof(ValueType.init.file) == string))
                     {
                         writefln(" (%s, %s)", (*it).file, val.file);
+                    }
+                    else
+                    {
+                        writeln;
                     }
                 }
                 r[key] = val;
