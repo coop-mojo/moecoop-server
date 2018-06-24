@@ -12,7 +12,7 @@ class MigemoException: Exception
     mixin basicExceptionCtors;
 }
 
-alias migemoEnforce = enforceEx!MigemoException;
+alias migemoEnforce = enforce!MigemoException;
 
 class Migemo{
     import std.traits;
