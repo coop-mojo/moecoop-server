@@ -20,6 +20,7 @@ d:
 matrix:
   allow_failures:
     - d: ldc-1.8.0
+    - os: osx
 
 os:
   - linux
