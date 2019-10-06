@@ -728,6 +728,7 @@ unittest
     assert(tpl.余り物.map!"a.個数".equal([1, 1]));
 }
 
+/* fragile test! 内部実装に依存している！
 unittest
 {
     import std.algorithm;
@@ -806,3 +807,4 @@ unittest
     assert(tpl.余り物.map!"a.アイテム名".equal(["チーズ パイ", "小麦粉", "塩"]));
     assert(tpl.余り物.map!"a.個数".equal([1, 4, 6]));
 }
+*/
