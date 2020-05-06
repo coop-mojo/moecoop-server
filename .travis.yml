@@ -24,7 +24,6 @@ matrix:
 
 os:
   - linux
-  - osx
 
 env:
   - ARCH=x86_64
@@ -62,6 +61,4 @@ after_success:
         docker login -u=_ -p="$HEROKU_TOKEN" registry.heroku.com;
         docker tag $MOECOOP_IMAGE:latest registry.heroku.com/moecoop-server/web;
         docker push registry.heroku.com/moecoop-server/web;
-        echo "machine app.arukas.io login $ARUKAS_JSON_API_TOKEN password $ARUKAS_JSON_API_SECRET" > $HOME/.netrc;
-        ./update-arukas.sh $MOECOOP_IMAGE:$version;
     fi
