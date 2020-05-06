@@ -58,5 +58,5 @@ after_success:
         echo "$DOCKER_PASSWORD" | docker login -u="$DOCKER_USERNAME" --password-stdin;
         docker push $MOECOOP_IMAGE:$version;
         docker push $MOECOOP_IMAGE:latest;
-        ./update-heroku "$HEROKU_USER" "$HEROKU_TOKEN" "$MOECOOP_IMAGE";
+        ./update-heroku.sh "$HEROKU_USER" "$HEROKU_TOKEN" "$MOECOOP_IMAGE";
     fi
