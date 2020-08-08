@@ -38,21 +38,26 @@ int referenceCostFor(string item,
     int procRecipeCost;
     if (auto rs = item in rrecipeMap)
     {
+        import std.array;
         import std.conv;
         import std.functional;
         import std.math;
 
         visited.insert(item);
 
-        procRecipeCost = (*rs)[].map!(r => recipeMap[r])
-                                .filter!(r => r.ingredients.byKey.all!(i => i !in visited))
-                                .map!(r => r.ingredients
-                                            .byKeyValue
-                                            .fold!((a, b) =>
-                                                   a + referenceCostFor(b.key, itemMap, recipeMap, rrecipeMap,
-                                                                        vendingPriceMap, questPriceMap,
-                                                                        procurementMap, visited.dup)*b.value)(0)
-                                      / r.products[item].to!real)
+        auto childRecipes = (*rs)[].map!(r => recipeMap[r])
+                                   .filter!(r => r.products.byKey.all!(p => p !in r.ingredients))
+                                   .filter!(r => r.ingredients.byKey.all!(i => i !in visited))
+                                   .array;
+        procRecipeCost = childRecipes.empty
+                         ? 0
+                         : childRecipes.map!(r => r.ingredients
+                                                   .byKeyValue
+                                                   .fold!((a, b) =>
+                                                          a + referenceCostFor(b.key, itemMap, recipeMap, rrecipeMap,
+                                                                               vendingPriceMap, questPriceMap,
+                                                                               procurementMap, visited.dup)*b.value)(0)
+                                             / r.products[item].to!real)
                                 .fold!min(real.max)
                                 .ceil
                                 .to!int;
@@ -115,7 +120,7 @@ int referenceCostFor(string item,
                             ["ロースト スネーク ミート": 5]) == 5);
 }
 
-// 必要素材がループする場合
+// 必要素材が複数レシピでループする場合
 @safe unittest
 {
     Item ironBar = { name: "鉄の棒", price: 12 };
@@ -168,4 +173,31 @@ int referenceCostFor(string item,
                                                                               "アイアンインゴット(鉄の棒)")],
                             (int[string]).init, (int[string]).init,
                             (int[string]).init) == 40);
+}
+
+// 必要素材が単一レシピでループする場合
+@safe unittest
+{
+    Item yamato = { name: "ソウル オブ ヤマト", price: 200 };
+    Item ink = { name: "インク", price: 40 };
+    Item blankScroll = { name: "未記入のスクロール", price: 40 };
+
+    Recipe recipe = {
+        name: "ソウル オブ ヤマト",
+        ingredients: [
+            "ソウル オブ ヤマト": 1,
+            "未記入のスクロール": 50,
+            "インク": 1
+        ],
+        products: ["ソウル オブ ヤマト": 1]
+    };
+
+    assert(referenceCostFor("ソウル オブ ヤマト",
+                            ["ソウル オブ ヤマト": yamato,
+                             "インク": ink,
+                             "未記入のスクロール": blankScroll],
+                            ["ソウル オブ ヤマト": recipe],
+                            ["ソウル オブ ヤマト": make!(RedBlackTree!string)("ソウル オブ ヤマト")],
+                            (int[string]).init, (int[string]).init,
+                            (int[string]).init) == 2000);
 }
