@@ -317,16 +317,28 @@ unittest
 {
     import std.algorithm;
     import std.exception;
+    import std.format;
     import std.range;
 
     import coop.util;
 
     auto w = assertNotThrown(new Wisdom(SystemResourceBase));
-    assert(w.recipeCategories.equal(["合成", "料理", "木工", "特殊", "薬調合", "裁縫", "装飾細工", "複合", "醸造", "鍛冶"]));
-    assert(w.binders.equal(["QoAクエスト", "アクセサリー", "アクセサリー No.2", "カオス", "家", "家具", "木工", "木工 No.2",
-                            "材料/道具", "材料/道具 No.2", "楽器", "罠", "裁縫", "裁縫 No.2", "複製",
-                            "鍛冶 No.1", "鍛冶 No.2", "鍛冶 No.3", "鍛冶 No.4", "鍛冶 No.5", "鍛冶 No.6", "鍛冶 No.7",
-                            "食べ物", "食べ物 No.2", "食べ物 No.3", "飲み物"]));
+    auto skillList = ["合成", "料理", "木工", "特殊", "薬調合", "裁縫", "装飾細工", "複合", "醸造", "鍛冶"];
+    assert(w.recipeCategories.length == skillList.length);
+    foreach (s; skillList)
+    {
+        assert(w.recipeCategories.canFind(s), format("`%s` not found in recipe categories", s));
+    }
+
+    auto binders = ["QoAクエスト", "アクセサリー", "アクセサリー No.2", "カオス", "家", "家具", "木工", "木工 No.2",
+                    "材料/道具", "材料/道具 No.2", "楽器", "罠", "裁縫", "裁縫 No.2", "複製",
+                    "鍛冶 No.1", "鍛冶 No.2", "鍛冶 No.3", "鍛冶 No.4", "鍛冶 No.5", "鍛冶 No.6", "鍛冶 No.7",
+                    "食べ物", "食べ物 No.2", "食べ物 No.3", "飲み物"];
+    assert(w.binders.length == binders.length);
+    foreach (b; binders)
+    {
+        assert(w.binders.canFind(b), format("`%s` not found in binders", b));
+    }
 
     assert(w.recipesIn(Binder("食べ物")).length == 128);
     assert("ロースト スネーク ミート" in w.recipesIn(Category("料理")));
