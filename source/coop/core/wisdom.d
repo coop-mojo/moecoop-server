@@ -323,7 +323,7 @@ unittest
     import coop.util;
 
     auto w = assertNotThrown(new Wisdom(SystemResourceBase));
-    auto skillList = ["合成", "料理", "木工", "特殊", "薬調合", "裁縫", "装飾細工", "複合", "醸造", "鍛冶"];
+    auto skillList = ["合成", "料理", "木工", "特殊", "薬調合", "裁縫", "装飾細工", "複合", "醸造", "鍛冶", "複製"];
     assert(w.recipeCategories.length == skillList.length);
     foreach (s; skillList)
     {
