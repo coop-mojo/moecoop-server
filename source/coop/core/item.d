@@ -346,6 +346,7 @@ struct ShieldInfo
     @name_("使用可能シップ") @optional ShipRestriction[] restriction = [ShipRestriction.Any];
     @name_("素材") Material material;
     @name_("消耗タイプ") @optional ExhaustionType type;
+    @name_("装備箇所") WeaponSlot slot;
     @name_("耐久") int exhaustion;
     @name_("追加効果") @optional double[string] effects;
     @name_("付加効果") @optional string additionalEffect;
